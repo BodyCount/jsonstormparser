@@ -21,7 +21,8 @@ files.forEach(file => {
         parsedFile.forEach(element => {
             let row = table.ele('row');
             Object.values(element).forEach((value) => {
-                row.ele('value', (value) ? value : 'null');
+                
+                row.ele((value) ? 'value' : 'null', (value) ? value : '');
             })
         });
         dataset.end({pretty: true});
