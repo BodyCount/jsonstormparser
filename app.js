@@ -11,8 +11,16 @@ files.forEach(file => {
     let outFile = file.split('.').shift();
     fs.readFile(`${filesDir}/${file}`, 'utf8', function (err, data) {
         let parsedFile = JSON.parse(data);
+
+        if (!Array.isArray(parsedFile))
+            throw 'File contains invalid JSON, should be array of items';
+
         let dataset = builder.create('dataset')
         let table = dataset.ele('table', { 'name': outFile});
+
+        if (parsedFile[0].hasOwnProperty('columnsToRewrite')){
+            var {columnsToRewrite} = parsedFile.shift();
+        }
 
         Object.keys(parsedFile[0]).forEach((element) => {
             table.ele('column', element)
@@ -20,6 +28,16 @@ files.forEach(file => {
 
         parsedFile.forEach(element => {
             let row = table.ele('row');
+            
+            if (typeof columnsToRewrite != 'undefined'){
+                columnsToRewrite.forEach((rewriteOption) => {
+                    let [column, value] = rewriteOption;
+                    if (element.hasOwnProperty(column)){
+                        element[column] = value;
+                    }
+                });
+            }
+
             Object.values(element).forEach((value) => {
                 row.ele((value !== null) ? 'value' : 'null', (value !== null) ? value : '');
             })
