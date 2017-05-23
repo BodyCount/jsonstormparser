@@ -30,8 +30,7 @@ files.forEach(file => {
             let row = table.ele('row');
             
             if (typeof columnsToRewrite != 'undefined'){
-                columnsToRewrite.forEach((rewriteOption) => {
-                    let [column, value] = rewriteOption;
+                columnsToRewrite.forEach(([column, value] = rewriteOption) => {
                     if (element.hasOwnProperty(column)){
                         element[column] = value;
                     }
