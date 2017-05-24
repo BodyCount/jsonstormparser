@@ -31,7 +31,7 @@ files.forEach(file => {
             
             if (typeof columnsToRewrite != 'undefined'){
                 columnsToRewrite.forEach(([column, value] = rewriteOption) => {
-                    if (element.hasOwnProperty(column)){
+                    if (element.hasOwnProperty(column) && element[column] == null){
                         element[column] = value;
                     }
                 });
