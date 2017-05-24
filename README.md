@@ -12,7 +12,7 @@ By default, jsonstormparser adds table and column names into output file.
 Add next option to insert only table rows:
 
 ```
- -r || -rowsonly
+ -r || -rows
 ```
 In case you need to rewrite column values, add next object as first element to imported array:
 ``` javascript
