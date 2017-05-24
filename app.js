@@ -1,22 +1,29 @@
 const fs = require('fs');
 const builder = require('xmlbuilder');
 
-var onlyRows;
-process.argv.forEach((val, index) => {
-  if (val == '-r')
+var onlyRows = false;
+process.argv.forEach((value) => {
+  if (value == '-r'){
     onlyRows = true;
+  }
 });
-
 
 let filesDir = __dirname + '/files/';
 let outFilesDir = __dirname + '/outfiles/';
 
-let files = fs.readdirSync(filesDir);
+if (!fs.existsSync(filesDir)){
+    fs.mkdirSync(filesDir);
+}
+if (!fs.existsSync(outFilesDir)){
+    fs.mkdirSync(outFilesDir);
+}
 
-files.forEach(file => {
-    if (file.split('.').pop() != 'json') return;
+fs.readdirSync(filesDir).forEach(file => {
+    if (file.split('.').pop() != 'json') 
+        throw 'File extension must be .json';
+
     let outFile = file.split('.').shift();
-    fs.readFile(`${filesDir}/${file}`, 'utf8', function (err, data) {
+    fs.readFile(`${filesDir}/${file}`, 'utf8', (err, data) => {
         let parsedFile = JSON.parse(data);
 
         if (!Array.isArray(parsedFile))
@@ -35,8 +42,9 @@ files.forEach(file => {
         }
         
         parsedFile.forEach(element => {
-            let row = (!onlyRows) ? table.ele('row') : dataset.ele('row');
-            if (typeof columnsToRewrite != 'undefined'){
+            let row = (typeof table !== 'undefined') 
+                        ? table.ele('row') : dataset.ele('row');
+            if (typeof columnsToRewrite !== 'undefined'){
                 columnsToRewrite.forEach(([column, value] = rewriteOption) => {
                     if (element.hasOwnProperty(column) && element[column] == null){
                         element[column] = value;
@@ -48,6 +56,7 @@ files.forEach(file => {
                 row.ele((value !== null) ? 'value' : 'null', (value !== null) ? value : '');
             });
         });
+
         dataset.end({pretty: true});
         fs.writeFile(`${outFilesDir}/${outFile}.xml`, dataset, (err) => {
             if (err) throw err;
