@@ -14,7 +14,7 @@ Add next option to insert only table rows:
 ```
  -r || -rowsonly
 ```
-In case you need to rewrite column values, add next object as first element of imported array:
+In case you need to rewrite column values, add next object as first element to imported array:
 ``` javascript
   {
     "columnsToRewrite": [
