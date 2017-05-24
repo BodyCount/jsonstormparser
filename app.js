@@ -3,7 +3,7 @@ const builder = require('xmlbuilder');
 
 var onlyRows = false;
 process.argv.forEach((value) => {
-  if (value == '-r' || value == '-rowsonly'){
+  if (value == '-r' || value == '-rows'){
     onlyRows = true;
   }
 });
