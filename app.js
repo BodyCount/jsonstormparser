@@ -3,12 +3,12 @@ const builder = require('xmlbuilder');
 
 var onlyRows = false;
 process.argv.forEach((value) => {
-  if (value == '-r'){
+  if (value == '-r' || value == '-rowsonly'){
     onlyRows = true;
   }
 });
 
-let filesDir = __dirname + '/files/';
+let filesDir = __dirname + '/infiles/';
 let outFilesDir = __dirname + '/outfiles/';
 
 if (!fs.existsSync(filesDir)){
@@ -30,7 +30,7 @@ fs.readdirSync(filesDir).forEach(file => {
             throw 'File contains invalid JSON, should be array of items';
 
         if (parsedFile[0].hasOwnProperty('columnsToRewrite')){
-            var {columnsToRewrite} = parsedFile.shift();
+            var {columnsToRewrite, onlyNull} = parsedFile.shift();
         }
 
         let dataset = builder.create('dataset');
@@ -46,7 +46,7 @@ fs.readdirSync(filesDir).forEach(file => {
                         ? table.ele('row') : dataset.ele('row');
             if (typeof columnsToRewrite !== 'undefined'){
                 columnsToRewrite.forEach(([column, value] = rewriteOption) => {
-                    if (element.hasOwnProperty(column) && element[column] == null){
+                    if (element.hasOwnProperty(column) && element[column] == ((onlyNull)? null: element[column])){
                         element[column] = value;
                     }
                 });
